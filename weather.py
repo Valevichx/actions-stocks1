@@ -1,11 +1,35 @@
+# SOURCE:  https://www.youtube.com/watch?v=PaGp7Vi5gfM&t=51s
+
+import logging
+import logging.handlers
 import os
+import requests
 
-def main():
-  print ("Hellow from GitHub Actions!")
-#  token = os.environ.get ("TEST_SECRET")
-#  if not token:
-#    raise RuntimeError ("TEST_SECRET env var is not set!")
-#  print ("All good! we found our env var")
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+logger_file_handler = logging.handlers.RotatingFileHandler(
+    "status.log",
+    maxBytes=1024 * 1024,
+    backupCount=1,
+    encoding="utf8",
+)
+formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+logger_file_handler.setFormatter(formatter)
+logger.addHandler(logger_file_handler)
 
-if __name__ == '__main__':
-  main()
+try:
+    SOME_SECRET = os.environ["SOME_SECRET"]
+except KeyError:
+    SOME_SECRET = "Token not available!"
+    #logger.info("Token not available!")
+    #raise
+
+
+if __name__ == "__main__":
+    logger.info(f"Token value: {SOME_SECRET}")
+
+    r = requests.get('https://weather.talkpython.fm/api/weather/?city=Berlin&country=DE')
+    if r.status_code == 200:
+        data = r.json()
+        temperature = data["forecast"]["temp"]
+        logger.info(f'Weather in Berlin: {temperature}')
