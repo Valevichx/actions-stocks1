@@ -2,8 +2,8 @@
 name: run weather.py
 
 on:
-  schedule:
-    - cron: '*/2 * * * *' # At 00:00 on Monday
+#  schedule:
+#    - cron: '*/2 * * * *' # At 00:00 on Monday
   
   workflow_dispatch:          # Allows you to run this workflow manually from the Actions tab
 
